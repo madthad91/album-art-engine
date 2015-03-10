@@ -1,1 +1,1 @@
-web: DEBUG=album-art-engine ./bin/www
+web: DEBUG=myapp ./bin/www

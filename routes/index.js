@@ -24,9 +24,10 @@ router.get('/getAAByAlbumName', function(req, res) {
         var result = JSON.parse(body);
 
         for (var i = 0; i < result.albums.items.length; i++) {
-            
+
             if (result.albums.items[i].name.toLowerCase().indexOf(req.query.albumName.toLowerCase()) > -1) {
                 res.write(result.albums.items[i].images[0].url);
+                res.end();
                 //flag = 1;
 
             } else if (req.query.albumName.toLowerCase().split(" ").indexOf('and')>-1) {
