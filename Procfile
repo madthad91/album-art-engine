@@ -1,1 +1,1 @@
-web: set DEBUG=album-art-engine & node .\bin\www
+web: DEBUG=album-art-engine ./bin/www
