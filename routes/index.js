@@ -12,7 +12,7 @@ router.get('/', function(req, res, next) {
 });
 
 router.get('/getAAByAlbumName', function(req, res) {
-    var flag = 0;
+    //var flag = 0;
     console.log("herro motto");
 
     var str = req.query.albumName.replace(/ /g, '%20');
@@ -20,32 +20,45 @@ router.get('/getAAByAlbumName', function(req, res) {
     var le_url = 'http://api.spotify.com/v1/search?q=' + str + '&type=album';
     console.log('and the resolved url is: ' + le_url);
     request(le_url, function(error, response, body) {
-        /*        if (!error && response.statusCode == 200) {
-                    console.log(body) // Show the HTML for the Google homepage. 
-                }*/
 
         var result = JSON.parse(body);
+
         for (var i = 0; i < result.albums.items.length; i++) {
-
-            if ((result.albums.items[i].name.toLowerCase().indexOf(req.query.albumName.toLowerCase()) > -1) && flag == 0) {
+            
+            if (result.albums.items[i].name.toLowerCase().indexOf(req.query.albumName.toLowerCase()) > -1) {
                 res.write(result.albums.items[i].images[0].url);
-                flag = 1;
+                //flag = 1;
 
-            } else if (req.query.albumName.toLowerCase().indexOf(' and ') > -1) {
+            } else if (req.query.albumName.toLowerCase().split(" ").indexOf('and')>-1) {
 
-                var str3 = req.query.albumName.toLowerCase().replace(/ and /g, ' & ');
+                /*var str3 = req.query.albumName.toLowerCase().replace(/ and /g, ' & ');
                 console.log(str3);
-                if ((result.albums.items[i].name.toLowerCase().indexOf(str3.toLowerCase()) > -1) && flag == 0) {
+                if (result.albums.items[i].name.toLowerCase().indexOf(str3.toLowerCase()) > -1) {
                     res.write(result.albums.items[i].images[0].url);
-                    flag = 1;
-                }
-            } else if (req.query.albumName.toLowerCase().indexOf(' & ') > -1) {
+                    //flag = 1;
+                }*/
 
-                var str3 = req.query.albumName.toLowerCase().replace(/ & /g, ' And ');
-                console.log(str3);
-                if ((result.albums.items[i].name.toLowerCase().indexOf(str3.toLowerCase()) > -1) && flag == 0) {
+                var tempArr = req.query.albumName.toLowerCase().split(" ");
+                var tempArrIndex = tempArr.indexOf('and');
+
+                if (result.albums.items[i].name.toLowerCase().split(" ").indexOf(tempArr[tempArrIndex]) > -1) {
+                    res.write(result.albums.items[i].images[0].url);
+                    res.end();
+                    //flag = 1;
+                }
+
+
+            } else if (req.query.albumName.toLowerCase().split(" ").indexOf('&')>-1) {
+
+                var tempArr = req.query.albumName.toLowerCase().split(" ");
+                var tempArrIndex = tempArr.indexOf('&');
+
+                /*var str3 = req.query.albumName.toLowerCase().replace(/ & /g, ' And ');
+                console.log(str3);*/
+                if (result.albums.items[i].name.toLowerCase().split(" ").indexOf(tempArr[tempArrIndex]) > -1) {
                     res.write(result.albums.items[i].album.images[0].url);
-                    flag = 1;
+                    res.end();
+                    //flag = 1;
                 }
             }
 
@@ -61,7 +74,6 @@ router.get('/getAAByAlbumName', function(req, res) {
     /*       Parse.Cloud.httpRequest({
                url: 'https://api.spotify.com/v1/search?q=' + str + '&type=album',
                success: function(httpResponse) {
-
                },
                error: function(httpResponse) {
                    res.send('Request failed with response code ' + httpResponse.status)
