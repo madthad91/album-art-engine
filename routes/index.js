@@ -106,6 +106,7 @@ router.get('/getAABySongName', function(req, res) {
             for (var j = 0; j < result.tracks.items[i].artists.length; j++) {
                 if (result.tracks.items[i].artists[j].name.toLowerCase().indexOf(req.query.artistName.toLowerCase()) > -1) {
                     res.status(200).send(result.tracks.items[i].album.images[0].url);
+                    return;
 
                 } else if (req.query.artistName.toLowerCase().split(" ").indexOf('and') > -1) {
 
@@ -117,6 +118,7 @@ router.get('/getAABySongName', function(req, res) {
 
                     if (result.tracks.items[i].artists[j].name.toLowerCase().indexOf(tempArr.join(" ").toLowerCase()) > -1) {
                         res.status(200).send(result.tracks.items[i].album.images[0].url);
+                        return;
 
                     }
                 } else if (req.query.artistName.toLowerCase().split(" ").indexOf('&') > -1) {
@@ -129,6 +131,7 @@ router.get('/getAABySongName', function(req, res) {
 
                     if (result.tracks.items[i].artists[j].name.toLowerCase().indexOf(tempArr.join(" ").toLowerCase()) > -1) {
                         res.status(200).send(result.tracks.items[i].album.images[0].url);
+                        return;
 
                     }
                 }
