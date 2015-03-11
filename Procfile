@@ -1,1 +1,1 @@
-web: DEBUG=album-art-engine ./bin/www
+web: set DEBUG=myapp & node .\bin\www
