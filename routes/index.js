@@ -1,5 +1,6 @@
 var express = require('express');
 var request = require('request');
+var AAHelper = require('../helpers/AAHelper.js');
 var router = express.Router();
 
 
@@ -11,17 +12,53 @@ router.get('/', function(req, res, next) {
     });
 });
 
+router.get('/getAA', function(req, res, next) {
+
+    if (req.query.album_name == "") {
+
+        var song_arr = req.query.song_name.trim().split(" ");
+        if ((song_arr[0].toLowerCase().indexOf("the") > -1) || (song_arr[0].toLowerCase().indexOf("a") > -1) || (song_arr[0].toLowerCase().indexOf("an") > -1)) {
+            delete song_arr[0];
+        }
+        var song_arrSize = song_arr.length - 1;
+        if ((song_arr[song_arrSize].toLowerCase().indexOf("the") > -1) || (song_arr[song_arrSize].toLowerCase().indexOf("a") > -1) || (song_arr[song_arrSize].toLowerCase().indexOf("an") > -1)) {
+            delete song_arr[song_arrSize];
+        }
+
+        var artist_arr = req.query.artist_name.trim().split(" ");
+        if ((artist_arr[0].toLowerCase().indexOf("the") > -1) || (artist_arr[0].toLowerCase().indexOf("a") > -1) || (artist_arr[0].toLowerCase().indexOf("an") > -1)) {
+            delete artist_arr[0];
+        }
+        var artist_arrSize = artist_arr.length - 1;
+        if ((artist_arr[artist_arrSize].toLowerCase().indexOf("the") > -1) || (artist_arr[artist_arrSize].toLowerCase().indexOf("a") > -1) || (artist_arr[artist_arrSize].toLowerCase().indexOf("an") > -1)) {
+            delete artist_arr[artist_arrSize];
+        }
+
+        AAHelper.getAABySongName(song_arr.join(" "), artist_arr.join(" ")); 
+    }
+    else
+    {
+
+        var album_arr = req.query.album_name.trim().split(" ");
+        if ((album_arr[0].toLowerCase().indexOf("the") > -1) || (album_arr[0].toLowerCase().indexOf("a") > -1) || (album_arr[0].toLowerCase().indexOf("an") > -1)) {
+            delete album_arr[0];
+        }
+        var album_arrSize = album_arr.length - 1;
+        if ((album_arr[album_arrSize].toLowerCase().indexOf("the") > -1) || (album_arr[album_arrSize].toLowerCase().indexOf("a") > -1) || (album_arr[album_arrSize].toLowerCase().indexOf("an") > -1)) {
+            delete album_arr[album_arrSize];
+        }
+        res.status(200);
+        res.send(AAHelper.getAAByAlbumName(album_arr.join(" ")));
+        return;
+
+    }
+    
+
+});
+
 router.get('/getAAByAlbumName', function(req, res) {
 
-    if (req.query.albumName == "")
-        console.log('here')
-    else
-        console.log('there')
-
-    console.log(typeof req.query.albumName);
-    console.log(req.query.albumName);
     var str = req.query.albumName.replace(/ /g, '%20');
-    console.log(str);
     var temp_url = 'http://api.spotify.com/v1/search?q=' + str + '&type=album';
     console.log('and the resolved url is: ' + temp_url);
     request(temp_url, function(error, response, body) {
