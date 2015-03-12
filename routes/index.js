@@ -14,45 +14,64 @@ router.get('/', function(req, res, next) {
 
 router.get('/getAA', function(req, res, next) {
 
-    if (req.query.album_name == "") {
+    if (req.query.album_name == "" || typeof req.query.album_name == "undefined") {
 
         var song_arr = req.query.song_name.trim().split(" ");
-        if ((song_arr[0].toLowerCase().indexOf("the") > -1) || (song_arr[0].toLowerCase().indexOf("a") > -1) || (song_arr[0].toLowerCase().indexOf("an") > -1)) {
+        if (song_arr[0].toLowerCase() == "the" || song_arr[0].toLowerCase() == "a" || song_arr[0].toLowerCase() == "an") {
             delete song_arr[0];
         }
         var song_arrSize = song_arr.length - 1;
-        if ((song_arr[song_arrSize].toLowerCase().indexOf("the") > -1) || (song_arr[song_arrSize].toLowerCase().indexOf("a") > -1) || (song_arr[song_arrSize].toLowerCase().indexOf("an") > -1)) {
+        if (song_arr[song_arrSize].toLowerCase() == "the" || song_arr[song_arrSize].toLowerCase() == "a" || song_arr[song_arrSize].toLowerCase() == "an") {
             delete song_arr[song_arrSize];
         }
 
         var artist_arr = req.query.artist_name.trim().split(" ");
-        if ((artist_arr[0].toLowerCase().indexOf("the") > -1) || (artist_arr[0].toLowerCase().indexOf("a") > -1) || (artist_arr[0].toLowerCase().indexOf("an") > -1)) {
+        if (artist_arr[0].toLowerCase() == "the" || artist_arr[0].toLowerCase() == "a" || artist_arr[0].toLowerCase() == "an") {
             delete artist_arr[0];
         }
         var artist_arrSize = artist_arr.length - 1;
-        if ((artist_arr[artist_arrSize].toLowerCase().indexOf("the") > -1) || (artist_arr[artist_arrSize].toLowerCase().indexOf("a") > -1) || (artist_arr[artist_arrSize].toLowerCase().indexOf("an") > -1)) {
+        if (artist_arr[artist_arrSize].toLowerCase() == "the" || artist_arr[artist_arrSize].toLowerCase() == "a" || artist_arr[artist_arrSize].toLowerCase() == "an") {
             delete artist_arr[artist_arrSize];
         }
 
-        AAHelper.getAABySongName(song_arr.join(" "), artist_arr.join(" ")); 
-    }
-    else
-    {
+        res.status(200);
+        var song_name = song_arr.join(" ").replace(/ /g, '%20');
+        console.log(song_name + " is the song name after the replacement");
+
+        var artist_name = artist_arr.join(" ").replace(/ /g, '%20');
+        console.log(artist_name + " is the artist name after the replacement");
+
+        var temp_url = 'http://api.spotify.com/v1/search?q=' + song_name + '&type=track';
+        console.log('and the resolved url is: ' + temp_url);
+
+        request(temp_url, function(error, response, body) {
+            res.send(AAHelper.getAABySongName(body, artist_arr.join(" ")));
+        });
+        return;
+    } else {
 
         var album_arr = req.query.album_name.trim().split(" ");
-        if ((album_arr[0].toLowerCase().indexOf("the") > -1) || (album_arr[0].toLowerCase().indexOf("a") > -1) || (album_arr[0].toLowerCase().indexOf("an") > -1)) {
+        if (album_arr[0].toLowerCase() == "the" || album_arr[0].toLowerCase() == "a" || album_arr[0].toLowerCase() == "an") {
             delete album_arr[0];
         }
         var album_arrSize = album_arr.length - 1;
-        if ((album_arr[album_arrSize].toLowerCase().indexOf("the") > -1) || (album_arr[album_arrSize].toLowerCase().indexOf("a") > -1) || (album_arr[album_arrSize].toLowerCase().indexOf("an") > -1)) {
+        if (album_arr[album_arrSize].toLowerCase() == "the" || album_arr[album_arrSize].toLowerCase() == "a" || album_arr[album_arrSize].toLowerCase() == "an") {
             delete album_arr[album_arrSize];
         }
         res.status(200);
-        res.send(AAHelper.getAAByAlbumName(album_arr.join(" ")));
+        var album_name = album_arr.join(" ").replace(/ /g, '%20');
+        var temp_url = 'http://api.spotify.com/v1/search?q=' + album_name + '&type=album';
+        console.log('and the resolved url is: ' + temp_url);
+        request(temp_url, function(error, response, body) {
+
+            res.send(AAHelper.getAAByAlbumName(body, album_arr.join(" ")));
+
+
+        });
         return;
 
     }
-    
+
 
 });
 
