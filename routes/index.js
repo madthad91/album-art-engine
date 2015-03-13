@@ -45,7 +45,7 @@ router.get('/getAA', function(req, res, next) {
         console.log('and the resolved url is: ' + temp_url);
 
         request(temp_url, function(error, response, body) {
-            res.send(AAHelper.getAABySongName(body, artist_arr.join(" ")));
+            res.json(AAHelper.getAABySongName(body, artist_arr.join(" ")));
         });
         return;
     } else {
@@ -64,7 +64,7 @@ router.get('/getAA', function(req, res, next) {
         console.log('and the resolved url is: ' + temp_url);
         request(temp_url, function(error, response, body) {
 
-            res.send(AAHelper.getAAByAlbumName(body, album_arr.join(" ")));
+            res.json(AAHelper.getAAByAlbumName(body, album_arr.join(" ")));
 
 
         });
