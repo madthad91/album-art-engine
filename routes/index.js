@@ -12,6 +12,13 @@ router.get('/', function(req, res, next) {
     });
 });
 
+router.get('/jpeg', function(req, res, next) {
+   request("https://i.scdn.co/image/6cc4c17116db6be3284c4f0ee26907c4d430edad", function(error, response, body) {
+            res.set('Content-Type', 'image/jpeg')
+                .send(body);
+        });
+});
+
 router.get('/getAA', function(req, res, next) {
 
     if (req.query.album_name == "" || typeof req.query.album_name == "undefined") {
