@@ -12,18 +12,16 @@ router.get('/', function(req, res, next) {
     });
 });
 
-router.get('/jpeg', function(req, res, next) {
-   request("https://i.scdn.co/image/6cc4c17116db6be3284c4f0ee26907c4d430edad", function(error, response, body) {
-            res.set('Content-Type', 'image/jpeg')
-                .send(body);
-        });
-});
-
 router.get('/getAA', function(req, res, next) {
 
     if (req.query.album_name == "" || typeof req.query.album_name == "undefined") {
 
-        var song_arr = req.query.song_name.trim().split(" ");
+        var temp_song_name = decodeURI(req.query.song_name)
+                                .replace(/,/g, "%26")
+                                .replace(/\'/g, "%23")
+                                .replace(/\(([^)]+)\)/, " ")
+                                .replace(/\[([^)]+)\]/, " ");
+        var song_arr = temp_song_name.trim().split(" ");
         if (song_arr[0].toLowerCase() == "the" || song_arr[0].toLowerCase() == "a" || song_arr[0].toLowerCase() == "an") {
             delete song_arr[0];
         }
@@ -32,7 +30,13 @@ router.get('/getAA', function(req, res, next) {
             delete song_arr[song_arrSize];
         }
 
-        var artist_arr = req.query.artist_name.trim().split(" ");
+        var temp_artist_name = decodeURI(req.query.artist_name)
+                                .replace(/,/g, "%26")
+                                .replace(/\'/g, "%23")
+                                .replace(/\(([^)]+)\)/, " ")
+                                .replace(/\[([^)]+)\]/, " ");
+
+        var artist_arr = temp_artist_name.trim().split(" ");
         if (artist_arr[0].toLowerCase() == "the" || artist_arr[0].toLowerCase() == "a" || artist_arr[0].toLowerCase() == "an") {
             delete artist_arr[0];
         }
@@ -52,10 +56,17 @@ router.get('/getAA', function(req, res, next) {
         console.log('and the resolved url is: ' + temp_url);
 
         request(temp_url, function(error, response, body) {
-            res.json({url: AAHelper.getAABySongName(body, artist_arr.join(" "))});
+            res.set('Content-Type', 'application/json')
+                .json({url: AAHelper.getAABySongName(body, artist_arr.join(" "))});
         });
         return;
     } else {
+
+        var temp_album_name = decodeURI(req.query.album_name)
+                                .replace(/,/g, "%26")
+                                .replace(/\'/g, "%23")
+                                .replace(/\(([^)]+)\)/, " ")
+                                .replace(/\[([^)]+)\]/, " ");
 
         var album_arr = req.query.album_name.trim().split(" ");
         if (album_arr[0].toLowerCase() == "the" || album_arr[0].toLowerCase() == "a" || album_arr[0].toLowerCase() == "an") {
@@ -71,7 +82,8 @@ router.get('/getAA', function(req, res, next) {
         console.log('and the resolved url is: ' + temp_url);
         request(temp_url, function(error, response, body) {
 
-            res.json({url:AAHelper.getAAByAlbumName(body, album_arr.join(" "))});
+            res.set('Content-Type', 'application/json')
+                .json({url:AAHelper.getAAByAlbumName(body, album_arr.join(" "))});
 
 
         });
