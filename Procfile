@@ -1,4 +1,4 @@
-=begin
-web: DEBUG=myapp ./bin/www=end
+web: DEBUG=myapp ./bin/www
 
-web:set DEBUG=myapp & node .\bin\www
+
+# web:set DEBUG=myapp & node .\bin\www
