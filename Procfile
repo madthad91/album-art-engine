@@ -1,4 +1,3 @@
-web: DEBUG=myapp ./bin/www
+web: DEBUG=album-art-engine ./bin/www
 
-
-# web:set DEBUG=myapp & node .\bin\www
+# web:set DEBUG=album-art-engine & node .\bin\www
