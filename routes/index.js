@@ -14,6 +14,11 @@ router.get('/', function(req, res, next) {
 
 router.get('/getAA', function(req, res, next) {
 
+    var ip_address = req.headers['x-forwarded-for'] || 
+     req.connection.remoteAddress || 
+     req.socket.remoteAddress ||
+     req.connection.socket.remoteAddress;
+
     if (req.query.album_name == "" || typeof req.query.album_name == "undefined") {
 
         var temp_song_name = req.query.song_name
@@ -58,7 +63,7 @@ router.get('/getAA', function(req, res, next) {
 
         request(temp_url, function(error, response, body) {
             res.set('Content-Type', 'application/json')
-                .json({url: AAHelper.getAABySongName(body, artist_arr.join(" "))});
+                .json({url: AAHelper.getAABySongName(body, artist_arr.join(" "), {url:temp_url, ip:ip_address})});
         });
         return;
     } else {
@@ -84,7 +89,7 @@ router.get('/getAA', function(req, res, next) {
         request(temp_url, function(error, response, body) {
 
             res.set('Content-Type', 'application/json')
-                .json({url:AAHelper.getAAByAlbumName(body, album_arr.join(" "))});
+                .json({url:AAHelper.getAAByAlbumName(body, album_arr.join(" "),  {url:temp_url, ip:ip_address})});
 
 
         });

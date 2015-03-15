@@ -1,7 +1,12 @@
-var request = require('request');
+var request = require('request'),
+    sprintf=require("sprintf-js").sprintf,
+    counter=0,
+    resolved_url,
+    nodemailer = require('nodemailer');
 
 
-exports.getAABySongName = function(body, artistName) {
+
+exports.getAABySongName = function(body, artistName, err_packet) {
 
 
 
@@ -45,10 +50,11 @@ exports.getAABySongName = function(body, artistName) {
     }
 
     //res.status(200).send("false");
+    this.logError(err_packet);
     return "false";
 };
 
-exports.getAAByAlbumName = function(body, album_name) {
+exports.getAAByAlbumName = function(body, album_name, err_packet) {
 
     var result = JSON.parse(body);
     for (var i = 0; i < result.albums.items.length; i++) {
@@ -89,6 +95,7 @@ exports.getAAByAlbumName = function(body, album_name) {
 
     }
     //res.status(200).send("false");
+    this.logError(err_packet);
     return "false";
     // res.end();
 
@@ -107,6 +114,45 @@ exports.getAAByAlbumName = function(body, album_name) {
     */
 };
 
+exports.logError = function(err){
+    // no need to set the from property, already set
+/*    var mail = new Email(
+    { to: "uta.mobi@gmail.com"
+    , subject: sprintf("Bug Report For ID: %010.0f", ++counter)
+    , body: "User ip:"+err.ip+" <br />Had issues with this url: "+err.url
+    })*/
+   /* mail.send();*/
+
+   // create reusable transporter object using SMTP transport
+    var transporter = nodemailer.createTransport({
+        service: 'Gmail',
+        auth: {
+            user: 'uta.mobi@gmail.com',
+            pass: 'Mobi2014'
+        }
+    });
+
+    // NB! No need to recreate the transporter object. You can use
+    // the same transporter object for all e-mails
+
+    // setup e-mail data with unicode symbols
+    var mailOptions = {
+        from: 'UTARADIOLOGGER <UTARADIOLOGGER@NO-REPLY.COM>', // sender address
+        to: 'uta.mobi@gmail.com', // list of receivers
+        subject: sprintf("Bug Report For ID: %010.0f", ++counter), // Subject line
+        html: "User ip:"+err.ip+" <br />Had issues with this url: "+err.url // html body
+    };
+
+    // send mail with defined transport object
+    transporter.sendMail(mailOptions, function(error, info){
+        if(error){
+            console.log(error);
+        }else{
+            console.log('Message sent: ' + info.response);
+        }
+    });
+
+}
 
 
 
