@@ -16,11 +16,12 @@ router.get('/getAA', function(req, res, next) {
 
     if (req.query.album_name == "" || typeof req.query.album_name == "undefined") {
 
-        var temp_song_name = decodeURI(req.query.song_name)
-                                .replace(/,/g, "%26")
-                                .replace(/\'/g, "%23")
+        var temp_song_name = req.query.song_name
                                 .replace(/\(([^)]+)\)/, " ")
-                                .replace(/\[([^)]+)\]/, " ");
+                                .replace(/\[([^)]+)\]/, " ")
+                                .replace(/%5B([^)]+)%5D/, " ")
+                                .replace(/%28([^)]+)%29/, " ");
+                
         var song_arr = temp_song_name.trim().split(" ");
         if (song_arr[0].toLowerCase() == "the" || song_arr[0].toLowerCase() == "a" || song_arr[0].toLowerCase() == "an") {
             delete song_arr[0];
@@ -30,12 +31,12 @@ router.get('/getAA', function(req, res, next) {
             delete song_arr[song_arrSize];
         }
 
-        var temp_artist_name = decodeURI(req.query.artist_name)
-                                .replace(/,/g, "%26")
-                                .replace(/\'/g, "%23")
+        var temp_artist_name = req.query.artist_name
                                 .replace(/\(([^)]+)\)/, " ")
-                                .replace(/\[([^)]+)\]/, " ");
-
+                                .replace(/\[([^)]+)\]/, " ")
+                                .replace(/%5B([^)]+)%5D/, " ")
+                                .replace(/%28([^)]+)%29/, " ");
+            
         var artist_arr = temp_artist_name.trim().split(" ");
         if (artist_arr[0].toLowerCase() == "the" || artist_arr[0].toLowerCase() == "a" || artist_arr[0].toLowerCase() == "an") {
             delete artist_arr[0];
@@ -62,12 +63,12 @@ router.get('/getAA', function(req, res, next) {
         return;
     } else {
 
-        var temp_album_name = decodeURI(req.query.album_name)
-                                .replace(/,/g, "%26")
-                                .replace(/\'/g, "%23")
+        var temp_album_name = req.query.album_name
                                 .replace(/\(([^)]+)\)/, " ")
-                                .replace(/\[([^)]+)\]/, " ");
-
+                                .replace(/\[([^)]+)\]/, " ")
+                                .replace(/%5B([^)]+)%5D/, " ")
+                                .replace(/%28([^)]+)%29/, " ");
+            
         var album_arr = req.query.album_name.trim().split(" ");
         if (album_arr[0].toLowerCase() == "the" || album_arr[0].toLowerCase() == "a" || album_arr[0].toLowerCase() == "an") {
             delete album_arr[0];
